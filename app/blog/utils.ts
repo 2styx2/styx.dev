@@ -73,14 +73,14 @@ export function formatDate(date: string, includeRelative = false) {
   } else if (daysAgo > 0) {
     formattedDate = `${daysAgo}d ago`
   } else {
-    formattedDate = 'Today'
+    formattedDate = 'today'
   }
 
   let fullDate = targetDate.toLocaleString('en-us', {
-    month: 'long',
+    month: 'short',
     day: 'numeric',
     year: 'numeric',
-  })
+  }).toLowerCase()
 
   if (!includeRelative) {
     return fullDate
