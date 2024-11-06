@@ -2,6 +2,8 @@ import { notFound } from 'next/navigation'
 import { CustomMDX } from 'app/components/mdx'
 import { formatDate, getBlogPosts } from 'app/blog/utils'
 import { baseUrl } from 'app/sitemap'
+import { ViewCounter } from "app/components/view-counter";
+import { redis } from "app/lib/redis";
 
 export async function generateStaticParams() {
   let posts = getBlogPosts()
@@ -95,4 +97,23 @@ export default function Blog({ params }) {
       </article>
     </section>
   )
+}
+
+async function Views({ slug }: { slug: string }) {
+  // eslint-disable-next-line @typescript-eslint/non-nullable-type-assertion-style
+  const viewsData = (await redis.get("views")) as {
+    slug: string;
+    views: number;
+  }[];
+
+  const postViews = viewsData.find((view) => view.slug === slug);
+  if (postViews) {
+    postViews.views += 1;
+  } else {
+    viewsData.push({ slug, views: 1 });
+  }
+
+  await redis.set("views", JSON.stringify(viewsData));
+
+  return <ViewCounter slug={slug} allViews={viewsData} />;
 }
