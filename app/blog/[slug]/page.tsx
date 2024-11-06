@@ -2,8 +2,12 @@ import { notFound } from 'next/navigation'
 import { CustomMDX } from 'app/components/mdx'
 import { formatDate, getBlogPosts } from 'app/blog/utils'
 import { baseUrl } from 'app/sitemap'
-import { ViewCounter } from "app/components/view-counter";
-import { redis } from "app/lib/redis";
+import { ReportView } from './view'
+import { Redis } from '@upstash/redis';
+
+const redis = Redis.fromEnv();
+
+
 
 export async function generateStaticParams() {
   let posts = getBlogPosts()
@@ -53,12 +57,17 @@ export function generateMetadata({ params }) {
   }
 }
 
-export default function Blog({ params }) {
+export default async function Blog({ params }) {
   let post = getBlogPosts().find((post) => post.slug === params.slug)
+
+  const views = redis.mget<number[]>(
+    ['pageviews', 'posts', params.slug].join(":"),
+  );
 
   if (!post) {
     notFound()
   }
+  const slug = params?.slug;
 
   return (
     <section>
@@ -84,9 +93,11 @@ export default function Blog({ params }) {
           }),
         }}
       />
+      <ReportView slug={post.slug} />
       <h1 className=" text-wrap font-semibold text-2xl  max-w-[px]">
         {post.metadata.title}
       </h1>
+      <p className="text-sm text-neutral-600 dark:text-neutral-400">{views} views</p>
       <div className="flex justify-between items-center mt-2 mb-8 text-sm">
         <p className="text-sm text-neutral-600 dark:text-neutral-400">
           {formatDate(post.metadata.publishedAt)}
@@ -97,23 +108,4 @@ export default function Blog({ params }) {
       </article>
     </section>
   )
-}
-
-async function Views({ slug }: { slug: string }) {
-  // eslint-disable-next-line @typescript-eslint/non-nullable-type-assertion-style
-  const viewsData = (await redis.get("views")) as {
-    slug: string;
-    views: number;
-  }[];
-
-  const postViews = viewsData.find((view) => view.slug === slug);
-  if (postViews) {
-    postViews.views += 1;
-  } else {
-    viewsData.push({ slug, views: 1 });
-  }
-
-  await redis.set("views", JSON.stringify(viewsData));
-
-  return <ViewCounter slug={slug} allViews={viewsData} />;
 }

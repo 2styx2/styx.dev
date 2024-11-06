@@ -1,12 +1,11 @@
-/**
- * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation. This is especially useful
- * for Docker builds.
- */
-await import("./app/env.js");
 
-/** @type {import("next").NextConfig} */
-const config = {
-  transpilePackages: ["next-mdx-remote"],
-};
+// @ts-check
+ 
+/** @type {import('next').NextConfig} */
 
-export default config;
+
+const nextConfig = {
+    reactStrictMode: false,
+}
+   
+export default nextConfig
