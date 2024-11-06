@@ -80,7 +80,7 @@ export function formatDate(date: string, includeRelative = false) {
     month: 'short',
     day: 'numeric',
     year: 'numeric',
-  }).toLowerCase()
+  })
 
   if (!includeRelative) {
     return fullDate
