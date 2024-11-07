@@ -14,8 +14,8 @@ config.autoAddCss = false
 export const metadata: Metadata = {
   metadataBase: new URL(baseUrl),
   title: {
-    default: 'portfolio',
-    template: '%s | Next.js Portfolio',
+    default: 'Wesley Matthews',
+    template: '%s | Portfolio',
   },
   description: 'This is my portfolio.',
   openGraph: {
@@ -55,7 +55,7 @@ export default function RootLayout({
         GeistMono.variable
       )}
     >
-      <body className="mx-4 mb-40 mt-8 flex max-w-2xl flex-col antialiased md:flex-row lg:mx-auto">
+      <body className="mx-4 mb-40 mt-8 flex max-w-2xl flex-col antialiased md:flex-row lg:mx-auto" suppressHydrationWarning={true}>
         <main className="text-left flex-auto min-w-0 mt-6 flex flex-col px-2 md:px-0">
           <Navbar />
           {children}

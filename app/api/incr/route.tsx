@@ -30,7 +30,6 @@ const hash = Array.from(new Uint8Array(buf))
     return new NextResponse(null, { status: 202 });
   }
 }
-console.log('test 1');
 await redis.incr(['pageviews', 'posts', slug].join(":"));
 return new NextResponse(null, { status: 202 });
 }
