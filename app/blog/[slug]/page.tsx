@@ -2,6 +2,12 @@ import { notFound } from 'next/navigation'
 import { CustomMDX } from 'app/components/mdx'
 import { formatDate, getBlogPosts } from 'app/blog/utils'
 import { baseUrl } from 'app/sitemap'
+import { ReportView } from './view'
+import { Redis } from '@upstash/redis';
+
+const redis = Redis.fromEnv();
+
+
 
 export async function generateStaticParams() {
   let posts = getBlogPosts()
@@ -51,12 +57,17 @@ export function generateMetadata({ params }) {
   }
 }
 
-export default function Blog({ params }) {
+export default async function Blog({ params }) {
   let post = getBlogPosts().find((post) => post.slug === params.slug)
+
+  const views = redis.mget<number[]>(
+    ['pageviews', 'posts', params.slug].join(":"),
+  );
 
   if (!post) {
     notFound()
   }
+  const slug = params?.slug;
 
   return (
     <section>
@@ -82,6 +93,7 @@ export default function Blog({ params }) {
           }),
         }}
       />
+      <ReportView slug={post.slug} />
       <h1 className=" text-wrap font-semibold text-2xl  max-w-[px]">
         {post.metadata.title}
       </h1>
@@ -89,6 +101,7 @@ export default function Blog({ params }) {
         <p className="text-sm text-neutral-600 dark:text-neutral-400">
           {formatDate(post.metadata.publishedAt)}
         </p>
+        <p className="text-sm text-neutral-600 dark:text-neutral-400">{views} views</p>
       </div>
       <article className="prose">
         <CustomMDX source={post.content} />
