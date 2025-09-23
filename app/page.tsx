@@ -1,5 +1,5 @@
 import { BlogPosts } from "app/components/posts";
-import { ScrambleText } from "./components/scramble";
+import { ScrambleText } from "app/components/scramble";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faLocationDot } from "@fortawesome/free-solid-svg-icons";
 import { Redis } from "@upstash/redis";
