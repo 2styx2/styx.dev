@@ -80,7 +80,7 @@ export default async function Page() {
       </div>
       </div>
       <p className="mb-4 text-zinc-300">
-        {`i'm a 20 y/o cs student at nc state. 
+        {`i'm a 21 y/o cs student at nc state. 
         i love building dev tools and solving problems. i enjoy how languages are designed
         and i live in the terminal. if i'm not at my computer, 
         i'm probably playing with my dogs, watching tv shows or planning my next project.`}

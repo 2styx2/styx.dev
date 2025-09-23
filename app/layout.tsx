@@ -55,6 +55,7 @@ export default function RootLayout({
         GeistMono.variable,
       )}
     >
+      <link rel="icon" href="/favicon.ico" sizes="any" />
       <body className="antialiased min-h-screen font-mono">
         <main className="max-w-4xl mx-auto px-4 py-8">
           <Navbar />
